@@ -1,3 +1,4 @@
+package us.rockhopper.utility;
 
 public class GameState {
 	private int[] data = null;

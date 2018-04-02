@@ -1,3 +1,5 @@
+package us.rockhopper.utility;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -6,11 +8,11 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class RDSToCSV {
+public class RDStoCSV {
 	private static String[] loadSettings() {
 		String[] settings = new String[6];
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("settings.db"));
+			BufferedReader br = new BufferedReader(new FileReader("./config/settings.db"));
 			String line = null;
 			for (int i = 0; i < 6; i++) {
 				line = br.readLine();
@@ -46,7 +48,7 @@ public class RDSToCSV {
 			pw = new PrintWriter(new File(fileName));
 
 			DBConnect dbc = getDatabaseConnection();
-			ResultSet result = dbc.executeQuery("select * from cis400db");
+			ResultSet result = dbc.executeQuery("select * from game_data");
 			while (result.next()) {
 				int a = result.getInt("a");
 				int b = result.getInt("b");
@@ -64,7 +66,7 @@ public class RDSToCSV {
 						new String[] { Integer.toString(a), Integer.toString(b), Integer.toString(c),
 								Integer.toString(d), Integer.toString(e), Integer.toString(held),
 								Integer.toString(friend_held), Integer.toString(foe1_held), Integer.toString(foe2_held),
-								Integer.toString(action) } + "\n"));
+								Integer.toString(action) }));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
