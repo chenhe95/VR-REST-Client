@@ -1,10 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RDSToCSV {
-	public static String[] loadSettings() {
+	private static String[] loadSettings() {
 		String[] settings = new String[6];
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("settings.db"));
@@ -22,10 +23,36 @@ public class RDSToCSV {
 		return settings;
 	}
 
-	public static void pullRowsIntoCSV() throws SQLException {
+	private static DBConnect getDatabaseConnection() throws SQLException {
 		String[] settings = loadSettings();
-		DBConnect dbc = new DBConnect(settings[0], settings[1], Integer.parseInt(settings[2]), settings[3], settings[4],
+		return new DBConnect(settings[0], settings[1], Integer.parseInt(settings[2]), settings[3], settings[4],
 				settings[5]);
+	}
+	
+	private static void printResultSet(ResultSet result) throws SQLException {
+		int i = 0;
+		while (result.next()) {
+			i++;
+		}
+		System.out.println("TOTAL: " + i);
+	}
+
+	public static void pullRowsIntoCSV() throws SQLException {
+		DBConnect dbc = getDatabaseConnection();
 		dbc.executeQuery("select * from cis400db");
+	}
+
+	public static void createDatabase() throws SQLException {
+		DBConnect dbc = getDatabaseConnection();
+		ResultSet rs = dbc.executeQuery(
+				"CREATE TABLE game_data (time INT, a INT, b INT, c INT, d INT, e INT, held INT, friend_held INT, foe1_held INT, foe2_held INT, action INT)");
+	}
+	
+	public static void main(String[] args) {
+		try {
+			createDatabase();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

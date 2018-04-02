@@ -49,7 +49,7 @@ public class DBConnect {
 			connectionProps.put("user", username);
 			connectionProps.put("password", password);
 
-			String url = "jdbc:" + driver + "://" + servername + ":" + port + "/" + dbname;
+			String url = "jdbc:" + driver + "://" + servername + ":" + port + "/" + dbname + "?user=" + username + "&password=" + password;
 
 			System.out.println("Attempting to connect to: " + url);
 			conn = DriverManager.getConnection(url, connectionProps);
