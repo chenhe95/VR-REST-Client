@@ -27,6 +27,24 @@ public class DBConnect {
 		initConnection();
 	}
 
+	public ResultSet executeUpdate(String s) throws SQLException {
+		if (conn == null) {
+			throw new IllegalStateException("Connection is not ready, call initConnection()");
+		}
+		Statement statement = conn.createStatement();
+		statement.executeUpdate(s);
+		return null;
+	}
+
+	public ResultSet execute(String s) throws SQLException {
+		if (conn == null) {
+			throw new IllegalStateException("Connection is not ready, call initConnection()");
+		}
+		Statement statement = conn.createStatement();
+		statement.execute(s);
+		return null;
+	}
+
 	public ResultSet executeQuery(String s) throws SQLException {
 		if (conn == null) {
 			throw new IllegalStateException("Connection is not ready, call initConnection()");
@@ -49,7 +67,7 @@ public class DBConnect {
 			connectionProps.put("user", username);
 			connectionProps.put("password", password);
 
-			String url = "jdbc:" + driver + "://" + servername + ":" + port + "/" + dbname + "?user=" + username + "&password=" + password;
+			String url = "jdbc:" + driver + "://" + servername + ":" + port + "/" + dbname;
 
 			System.out.println("Attempting to connect to: " + url);
 			conn = DriverManager.getConnection(url, connectionProps);
