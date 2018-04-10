@@ -1,0 +1,3 @@
+1st_cube,2nd_cube,3rd_cube,4th_cube,5th_cube, held_cube, friend_held,foe1_held,foe2_held, action
+1,-1,-1,-1,-1, -1, -1,-1,-1, 0
+0,0,2,3,-1, 3, -1,1,1, 7
