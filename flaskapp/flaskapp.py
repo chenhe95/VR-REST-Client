@@ -31,10 +31,10 @@ ce.fit(X_ce)
 settings_db = [None for i in xrange(6)]
 
 with app.open_resource("settings.db", "r") as f_in:
-	i = 0
-	for line in f_in:
-		settings_db[i] = line
-		i += 1
+    i = 0
+    for line in f_in:
+        settings_db[i] = line
+        i += 1
 
 db_driver = settings_db[0]
 db_db = settings_db[1]
@@ -55,11 +55,11 @@ cur = db.cursor()
 atexit.register(db.close)
 
 def execute_print_query(qry):
-	cur.execute(qry)
+    cur.execute(qry)
 
-	# print all the first cell of all the rows
-	for row in cur.fetchall():
-	    print row[0]
+    # print all the first cell of all the rows
+    for row in cur.fetchall():
+        print row[0]
 
 
 def allowed_file(filename):
@@ -67,37 +67,37 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def train_decision_maker(file_instance, file_name):
-	data_pd = pd.read_csv(file_instance)
+    data_pd = pd.read_csv(file_instance)
 
-	clf = LinearSVC()
+    clf = LinearSVC()
 
-	data_pd
+    data_pd
 
-	data = data_pd.as_matrix()
+    data = data_pd.as_matrix()
 
-	X = data[:, 0:-1]
-	y = data[:, -1]
+    X = data[:, 0:-1]
+    y = data[:, -1]
 
-	X_ce = [range(-1, 4) for i in xrange(9)]
-	X_ce = np.array(X_ce)
-	X_ce = X_ce.transpose()
+    X_ce = [range(-1, 4) for i in xrange(9)]
+    X_ce = np.array(X_ce)
+    X_ce = X_ce.transpose()
 
-	ce = CategoricalEncoder()
-	ce.fit(X_ce)
-	X = ce.transform(X).todense()
+    ce = CategoricalEncoder()
+    ce.fit(X_ce)
+    X = ce.transform(X).todense()
 
-	clf.fit(X, y)
+    clf.fit(X, y)
 
-	clf.predict(X)
+    clf.predict(X)
 
-	with open(file_name + ".pickle", "w") as f_out:
-	    pickle.dump(clf, f_out)
+    with open(os.path.join(app.config['UPLOAD_FOLDER'], file_name + ".pickle", "w")) as f_out:
+        pickle.dump(clf, f_out)
 
 def load_decision_maker(file_name):
-	with app.open_resource(file_name, "r") as f_in:
-	    clf = pickle.load(f_in)
+    with app.open_resource(os.path.join(app.config['UPLOAD_FOLDER'], file_name, "r")) as f_in:
+        clf = pickle.load(f_in)
 
-	    return clf
+        return clf
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -115,6 +115,9 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            train_decision_maker(file, filename)
+
             return redirect(url_for('uploaded_file',
                                     filename=filename))
     return '''
